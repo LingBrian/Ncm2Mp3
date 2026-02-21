@@ -3,12 +3,6 @@ import crypto from 'crypto'
 import path from 'path';
 import NodeID3 from 'node-id3';
 const args = process.argv.slice(2);
-let sourcePath = args[0];
-let outputPath = args[1];
-let dir = fs.readdirSync(sourcePath).filter(file => 
-            path.extname(file).toLowerCase() === '.ncm'
-        );
-console.log(dir[0])
 function aes128EcbDecrypt(encrypted,secretKey) {
     try {
         // 1. 将十六进制密钥转换为 Buffer (这正是你之前学习的 Buffer 转换)
@@ -194,7 +188,62 @@ class Ncm{
         output.close();
     }
 }
-dir.forEach(file => {
-    const ncm = new Ncm(sourcePath+file,outputPath);
-    ncm.turnUp();
-});
+switch(args[0]){
+    case '-h':
+        console.log(`
+Ncm2Mp3 
+Author: BrianLing
+
+Usage:
+    node main.js [arg1]
+        arg1:
+            -h :
+                帮助文档
+
+            -c [filepath]:
+                转换filepath的文件至源文件夹
+                
+            -d [source_folder_path] [destnation_folder_path]:
+                 转换源文件夹中所有ncm文件至目标文件夹
+            `);
+            break;
+    case '-c':
+        console.log(args[1]);
+        // 定义文件路径
+        const filePath = args[1];
+        // 获取文件所在文件夹路径
+        const directoryPath = path.dirname(filePath);
+        // 确保路径以斜杠结尾（匹配你示例中的C:/test/格式）
+        const dirWithSlash = path.join(directoryPath, '/');
+            
+        const ncm = new Ncm(args[1],dirWithSlash);
+        ncm.turnUp();
+        break;
+    case '-d':
+        let dir = fs.readdirSync(path.join(args[1],'/')).filter(file => 
+            path.extname(file).toLowerCase() === '.ncm'
+        );
+        dir.forEach(file => {
+            const ncm = new Ncm(path.join(args[1],'/')+file,path.join(args[2],'/'));
+            ncm.turnUp();
+        });
+        break;
+    default:
+        console.log(`
+Ncm2Mp3 
+Author: BrianLing
+
+Usage:
+    node main.js [arg1]
+        arg1:
+            -h :
+                帮助文档
+
+            -c [filepath]:
+                转换filepath的文件至源文件夹
+                
+            -d [source_folder_path] [destnation_folder_path]:
+                 转换源文件夹中所有ncm文件至目标文件夹
+            `);
+            break;
+}
