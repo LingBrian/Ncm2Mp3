@@ -188,10 +188,9 @@ class Ncm{
         output.close();
     }
 }
-switch(args[0]){
-    case '-h':
-        console.log(`
+const help = `
 Ncm2Mp3 
+Version:v0.2
 Author: BrianLing
 
 Usage:
@@ -205,7 +204,10 @@ Usage:
                 
             -d [source_folder_path] [destnation_folder_path]:
                  转换源文件夹中所有ncm文件至目标文件夹
-            `);
+            `;
+switch(args[0]){
+    case '-h':
+        console.log(help);
             break;
     case '-c':
         console.log(args[1]);
@@ -229,21 +231,6 @@ Usage:
         });
         break;
     default:
-        console.log(`
-Ncm2Mp3 
-Author: BrianLing
-
-Usage:
-    node main.js [arg1]
-        arg1:
-            -h :
-                帮助文档
-
-            -c [filepath]:
-                转换filepath的文件至源文件夹
-                
-            -d [source_folder_path] [destnation_folder_path]:
-                 转换源文件夹中所有ncm文件至目标文件夹
-            `);
+        console.log(help);
             break;
 }
